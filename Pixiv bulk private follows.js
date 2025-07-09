@@ -9,13 +9,6 @@
 
 (async function iife() {
 
-// --------------------- If you have errors, please check that these classes are correct ---------------------
-const FollowCount_Class = 'sc-1mr081w-0 kZlOCw' // Number next to "Users"
-const ArtistName_Class = 'sc-d98f2c-0 sc-19z9m4s-2 QHGGh' // Artist's name
-const DropdownMenuButton_Class = 'sc-1ij5ui8-0 QihHO sc-125tkm8-2 gUcOiA' // Dropdown menu button
-const PrivatePublicButton_Class =  'sc-1o6692m-0 hVxezo gtm-profile-user-menu-restrict-changing' // Private/public button
-
-
 function getSafe(fn, defaultVal) {
 	try {
 	  return fn();
@@ -30,7 +23,7 @@ var FollowCount = 0
 var FollowsEdited = 0
 
 // Get the follow count
-var FollowCount = getSafe(() => document.getElementsByClassName(FollowCount_Class)[0].getElementsByTagName('span')[0].textContent,'not-found').replace(/\D/g, "")
+var FollowCount = getSafe(() => parseInt(document.querySelector('h2[font-size="20"][color="text2"]').parentElement.lastChild.firstChild.textContent))
 
 // error checking for follow count
 if (FollowCount == 'not-found') {
@@ -48,7 +41,7 @@ while ((FollowsEdited < FollowCount) || (FollowCount == 'not-found')) {
 	while (true) {
 
 		// Get the first name in the list
-		var ArtistName = getSafe(() => document.getElementsByClassName(ArtistName_Class)[0].textContent)
+		var ArtistName = getSafe(() => document.querySelector('section a[data-gtm-value]:only-child').textContent)
 
 		// Check if the name is new
 		if ((ArtistName != OldArtistName) && (typeof ArtistName != 'undefined')) {
@@ -75,7 +68,7 @@ while ((FollowsEdited < FollowCount) || (FollowCount == 'not-found')) {
 	var DurationCounter = 0
 	while (true) {
 
-		var Button = document.getElementsByClassName(PrivatePublicButton_Class)[0]
+		var Button = document.querySelector('div.gtm-profile-user-menu-restrict-changing[role=button]')
 		var ButtonAriaDisabled = getSafe(() => Button.getAttribute('aria-disabled'))
 		
 		// Click private/public button when it exists & isn't disabled
@@ -87,14 +80,14 @@ while ((FollowsEdited < FollowCount) || (FollowCount == 'not-found')) {
 
 		// Click the follow dropdown menu button if the private/public button is not visible
 		if (ButtonAriaDisabled != 'true') {
-			getSafe(() => document.getElementsByClassName(DropdownMenuButton_Class)[0].click())
+			getSafe(() => document.querySelector('button[data-click-label="follow"]').nextElementSibling.firstChild.click())
 		}
 
 		DurationCounter++
 
 		// Stop the script after 10 seconds of no progress
 		if (DurationCounter > 100) {
-			if (!document.getElementsByClassName(DropdownMenuButton_Class)[0])
+			if (!document.querySelector('button[data-click-label="follow"]').nextElementSibling.firstChild)
 			{
 				throw new Error('Could not find the dropdown menu button, check the guide for help with updating the class name.');
 			} else {
